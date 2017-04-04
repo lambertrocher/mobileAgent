@@ -178,6 +178,7 @@ public class Starter{
 	 * Application starter
 	 * @param args
 	 */
+	@SuppressWarnings("deprecation")
 	public static void main(String... args) {
 		if(System.getSecurityManager() == null)System.setSecurityManager(new RMISecurityManager());
 		new Starter(args);
