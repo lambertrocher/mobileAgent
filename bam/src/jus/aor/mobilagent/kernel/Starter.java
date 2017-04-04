@@ -47,8 +47,7 @@ public class Starter{
 		// récupération du niveau de log
 		java.util.logging.Level level;
 		try {
-			level = Level.parse(System.getProperty("LEVEL"));
-			
+			level = Level.parse(System.getProperty("LEVEL"));System.out.println("--------");
 		}catch(NullPointerException e) {
 			level=java.util.logging.Level.OFF;
 		}catch(IllegalArgumentException e) {
@@ -180,7 +179,8 @@ public class Starter{
 	 * @param args
 	 */
 	public static void main(String... args) {
-		//if(System.getSecurityManager() == null)System.setSecurityManager(new RMISecurityManager());
+		System.setProperty("java.security.policy","file:./security.policy");
+		if(System.getSecurityManager() == null)System.setSecurityManager(new RMISecurityManager());
 		new Starter(args);
 	}
 }
