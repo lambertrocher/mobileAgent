@@ -35,7 +35,7 @@ public class Annuaire extends UnicastRemoteObject implements _Annuaire {
 	return annuaire.get(abonne);
     }
     
-    public static void main(String[] args[]) {
+    public static void main(String[] args) {
 	
 	annuaire = new HashMap<String, Numero>();
 	
