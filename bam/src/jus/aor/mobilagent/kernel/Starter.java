@@ -47,7 +47,7 @@ public class Starter{
 		// récupération du niveau de log
 		java.util.logging.Level level;
 		try {
-			level = Level.parse(System.getProperty("LEVEL"));System.out.println("--------");
+			level = Level.FINE;
 		}catch(NullPointerException e) {
 			level=java.util.logging.Level.OFF;
 		}catch(IllegalArgumentException e) {
@@ -80,6 +80,7 @@ public class Starter{
 		loader = new BAMServerClassLoader(new URL[]{new URL("file:///.../MobilagentServer.jar")},this.getClass().getClassLoader());
 		classe = (Class<jus.aor.mobilagent.kernel.Server>)Class.forName("jus.aor.mobilagent.kernel.Server",true,loader);
 		server = classe.getConstructor(int.class,String.class).newInstance(port,name);
+		logger.log(Level.FINE, "Server \""+name+"\" created at port "+port, "");
 	}
 	/**
 	 * Ajoute les services définis dans le fichier de configuration
@@ -107,6 +108,7 @@ public class Starter{
 	protected void addService(String name, String classeName, String codeBase, Object... args) {
 		try{
 			server.addService(name,classeName,codeBase,args);
+			logger.log(Level.FINE, "Service added: "+name, "");
 		}catch(Exception e){
 			logger.log(Level.FINE," erreur durant l'ajout d'un service",e);
 		}
@@ -145,6 +147,7 @@ public class Starter{
 	protected void deployAgent(String classeName, Object[] args, String codeBase, List<String> serverAddress, List<String> serverAction) {
 		try{
 			server.deployAgent(classeName,args,codeBase,serverAddress,serverAction);
+			logger.log(Level.FINE, "Agent deployed: "+classeName, "");
 		}catch(Exception e){
 			logger.log(Level.FINE," erreur durant le déploiement de l'agent",e);
 		}

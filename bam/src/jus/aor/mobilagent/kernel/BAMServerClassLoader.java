@@ -7,7 +7,9 @@ public class BAMServerClassLoader extends URLClassLoader{
 
 	public BAMServerClassLoader(URL[] urls, ClassLoader classLoader) {
 		super(urls, classLoader);
-		// TODO Auto-generated constructor stub
+		for (URL url : urls) {
+			this.addURL(url);
+		}
 	}
 
 }
