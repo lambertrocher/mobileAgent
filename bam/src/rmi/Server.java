@@ -9,6 +9,10 @@ public class Server {
     
     public static void main(String[] args) {
 	
+	if (System.getSecurityManager() == null) {
+	    System.setSecurityManager(new SecurityManager());
+	}
+	
 	// Valeur par défaut du port et du nombre de chaines d'hôtels
 	int port = 1099;
 	int nombreChaines = 4;
