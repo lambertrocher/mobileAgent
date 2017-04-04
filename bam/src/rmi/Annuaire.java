@@ -31,7 +31,6 @@ public class Annuaire extends UnicastRemoteObject implements _Annuaire {
 
     @Override
     public Numero get(String abonne) {
-	if (abonne == null) throw new IllegalArgumentException("abonne est null"); 
 	return annuaire.get(abonne);
     }
     
@@ -48,7 +47,7 @@ public class Annuaire extends UnicastRemoteObject implements _Annuaire {
     	e1.printStackTrace();
         }
         try {
-    	doc = docBuilder.parse(new File("dataStore/Annuaire.xml"));
+    	doc = docBuilder.parse(new File("DataStore/Annuaire.xml"));
         } catch (SAXException | IOException e) {
     	e.printStackTrace();
         }

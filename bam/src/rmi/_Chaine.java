@@ -4,6 +4,7 @@
 
 package rmi;
 
+import java.rmi.RemoteException;
 import java.util.List;
 
 /**
@@ -17,5 +18,5 @@ public interface _Chaine extends java.rmi.Remote {
 	 * @param localisation le lieu où l'on recherche des hotels
 	 * @return la liste des hotels trouvés
 	 */
-	public abstract List<Hotel> get(String localisation) ;
+	public abstract List<Hotel> get(String localisation) throws RemoteException;
 }
