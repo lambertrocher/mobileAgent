@@ -4,10 +4,11 @@
 
 package rmi;
 
-import java.net.MalformedURLException;
-import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,18 +17,33 @@ import java.util.List;
  * Représente un client effectuant une requête lui permettant d'obtenir les numéros de téléphone des hôtels répondant à son critère de choix.
  * @author  Morat
  */
-public class LookForHotel extends Thread {
+public class LookForHotel {
     
 	/** le critère de localisaton choisi */
-	private static String localisation;
-	// ...
+	private String localisation;
+	/** le nombre de chaîne d'hotels */
+	private int nombreChaines;
+	/** port pour le registre */
+	private int port;
+	/** Hashmap contenat les correspondances entre une chaîne d'hôtels et un numéro */
+	private HashMap<String, Numero> numberList;
+	
 	/**
 	 * Définition de l'objet représentant l'interrogation.
 	 * @param args les arguments n'en comportant qu'un seul qui indique le critère
 	 *          de localisation
 	 */
 	public LookForHotel(String... args){
+	    port = 1099;
+	    nombreChaines = 4;
+	    
+	    // On vérifie que la localisation est en argument
+	    if (args.length != 1) {
+		System.out.println("Client <localisation>");
+		System.exit(1);
+	    }
 	    localisation = args[0];
+	    
 	}
 	
 	/**
@@ -37,53 +53,50 @@ public class LookForHotel extends Thread {
 	 */
 	public long call() throws RemoteException {
 	    
+	    // Heure au début de l'interrogation
 	    long startTime = System.currentTimeMillis();
 	    
 	    try {
-		// Interrogation des chaînes d'hôtels
-		_Chaine refChaine = (_Chaine) Naming.lookup("Chaine");
-		List<Hotel> hotels = refChaine.get(localisation);
 		
-		// Interrogation de l'annuaire
-		_Annuaire refAnnuaire = (_Annuaire) Naming.lookup("Annuaire");
-		Iterator<Hotel> iterator = hotels.iterator();
+		Registry registry = LocateRegistry.getRegistry(port);
+		_Annuaire refAnnuaire = (_Annuaire) registry.lookup("Annuaire");
+		List<Hotel> hotels = new LinkedList<Hotel>();
+		
+		// Interrogation des chaînes d'hôtels
+		for (int i = 1; i <= nombreChaines; i++) {
+		    String chaineName = "Chaine" + i;
+		    _Chaine refChaine = (_Chaine) registry.lookup(chaineName);
+		    hotels.addAll(refChaine.get(localisation));
+		}
 		
 		// On récupère les numéros des hôtels
-		List<Numero> numeros = new LinkedList<Numero>();
+		numberList = new HashMap<String, Numero>();
+		Iterator<Hotel> iterator = hotels.iterator();
 		while (iterator.hasNext()) {
-		    numeros.add(refAnnuaire.get(iterator.next().name));
+		    String hotelName = iterator.next().name;
+		    numberList.put(hotelName, refAnnuaire.get(hotelName));
 		}
-		 printNum(numeros);
-		
-	    } catch (MalformedURLException | NotBoundException e) {
+	    } catch (NotBoundException e) {
 		e.printStackTrace();
 	    }
 	    
+	    // Heure à la fin de l'interrogation
 	    long endTime = System.currentTimeMillis();
-	    
-	   
 	    
 	    return endTime - startTime;
 	}
 	
-	public void printNum(List<Numero> numeros) {
-	    Iterator<Numero> iterator = numeros.iterator();
-	    if (!iterator.hasNext()) {
-		System.out.println("Pas de numéros");
-	    }
-	    while (iterator.hasNext()) {
-		System.out.println(iterator.next().toString());
-	    }
-	}
-	
-	public void run() {
-	    System.out.println("localisation : " + localisation);
+	public static void main(String[] args) {
 	    long executionTime = 0;
+	    
+	    LookForHotel client = new LookForHotel(args[0]);
+	    System.out.println("Localisation choisie : " + args[0]);
+	    
 	    try {
-		executionTime = call();
+		executionTime = client.call();
 	    } catch (RemoteException e) {
 		e.printStackTrace();
 	    }
-	    System.out.println(executionTime);
+	    System.out.println("Temps d'exécution de l'interrogation : " + executionTime + " ms");
 	}	
 }

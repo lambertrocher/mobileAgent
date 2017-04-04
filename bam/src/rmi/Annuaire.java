@@ -2,11 +2,7 @@ package rmi;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.rmi.AlreadyBoundException;
-import java.rmi.Naming;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 
@@ -23,18 +19,10 @@ public class Annuaire extends UnicastRemoteObject implements _Annuaire {
     
     private static final long serialVersionUID = 1L;
     
-    private static HashMap<String, Numero> annuaire;
+    private HashMap<String, Numero> annuaire;
     
     protected Annuaire() throws RemoteException {
 	super();
-    }
-
-    @Override
-    public Numero get(String abonne) {
-	return annuaire.get(abonne);
-    }
-    
-    public static void main(String[] args) {
 	
 	annuaire = new HashMap<String, Numero>();
 	
@@ -42,14 +30,14 @@ public class Annuaire extends UnicastRemoteObject implements _Annuaire {
         DocumentBuilder docBuilder = null;
         Document doc = null;
         try {
-    	docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         } catch (ParserConfigurationException e1) {
-    	e1.printStackTrace();
+            e1.printStackTrace();
         }
         try {
-    	doc = docBuilder.parse(new File("DataStore/Annuaire.xml"));
+            doc = docBuilder.parse(new File("DataStore/Annuaire.xml"));
         } catch (SAXException | IOException e) {
-    	e.printStackTrace();
+            e.printStackTrace();
         }
         
         String name, numero;
@@ -57,21 +45,16 @@ public class Annuaire extends UnicastRemoteObject implements _Annuaire {
         NamedNodeMap attrs;
         /* acquisition de toutes les entrées de l'annuaire */
         for(int i =0; i<list.getLength();i++) {
-        	attrs = list.item(i).getAttributes();
-        	name=attrs.getNamedItem("name").getNodeValue();
-        	numero=attrs.getNamedItem("numero").getNodeValue();
-        	annuaire.put(name, new Numero(numero));
+            attrs = list.item(i).getAttributes();
+            name=attrs.getNamedItem("name").getNodeValue();
+            numero=attrs.getNamedItem("numero").getNodeValue();
+            annuaire.put(name, new Numero(numero));
         }
-    
-        Annuaire serveurAnnuaire = null;
-        
-	try {
-	    serveurAnnuaire = new Annuaire();
-	    LocateRegistry.createRegistry(1099);
-	    Naming.bind("Annuaire", serveurAnnuaire);
-	} catch (RemoteException | MalformedURLException | AlreadyBoundException e) {
-	    e.printStackTrace();
-	}
-	
     }
+
+    @Override
+    public Numero get(String abonne) {
+	return annuaire.get(abonne);
+    }
+    
 }
