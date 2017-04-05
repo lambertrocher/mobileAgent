@@ -28,7 +28,7 @@ import org.w3c.dom.NodeList;
 /**
  * @author Morat 
  */
-public class Starter{
+public class Starter {
 	/** le document xml en cours */
 	protected Document doc;
 	/** le logger pour ce code */
@@ -183,7 +183,7 @@ public class Starter{
 	 */
 	public static void main(String... args) {
 		System.setProperty("java.security.policy","file:./security.policy");
-		if(System.getSecurityManager() == null)System.setSecurityManager(new RMISecurityManager());
+		if(System.getSecurityManager() == null)System.setSecurityManager(new SecurityManager());
 		new Starter(args);
 	}
 }

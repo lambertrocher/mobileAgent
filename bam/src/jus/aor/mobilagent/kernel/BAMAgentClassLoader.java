@@ -1,10 +1,34 @@
 package jus.aor.mobilagent.kernel;
 
-public class BAMAgentClassLoader extends ClassLoader{
+public class BAMAgentClassLoader extends ClassLoader {
 
-	public BAMAgentClassLoader(String jarName,ClassLoader parent) {
-		
-	}
+    protected Jar jar;
+    
+    BAMAgentClassLoader(String jarName,ClassLoader parent) {
+	//TODO
+    }
+    
+    BAMAgentClassLoader(ClassLoader classLoader) {
+	//TODO
+    }
 	
+    void integrateCode(Jar jar) {
+	this.jar = jar;
+    }
+    
+    private String className(String s) {
+	//TODO
+	return null;
+    }
+    
+    Jar extractCode() {
+	return this.jar;
+    }
+    
+    public String toString() {
+	return null;
+	//TODO
+    }
+    
 
 }
