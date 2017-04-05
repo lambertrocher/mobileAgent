@@ -1,6 +1,8 @@
 package jus.aor.mobilagent.kernel;
 
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.net.URI;
 
@@ -9,7 +11,7 @@ import com.sun.media.jfxmedia.logging.Logger;
 public abstract class Agent implements _Agent {
 
 	private static final long serialVersionUID = 1L;
-	private AgentServer agentServer;
+	private transient AgentServer agentServer;
 	// Nom du server initial
 	private String serverName;
 	private Route route;
@@ -22,14 +24,27 @@ public abstract class Agent implements _Agent {
 
 	@Override
 	public final void run() {
-		System.out.println("Agent : run");
+		if (this.route.hasNext()) {
+			//on avance sur la route meme si il y eu du doute
+			Etape NextStep = this.route.next();
+			//execute laction 
+			NextStep.action.execute();
 
+			if (this.route.hasNext()) {
+				// envoie lagent au prochain AgentServer
+				this.move();
+			} else {
+				// revient au debut
+				this.move(this.route.retour.server);
+			}
+		} else {
+			this.route.retour.action.execute();
+		}
 
 	}
 
 	@Override
 	public void init(AgentServer agentServer, String serverName) {
-		System.out.println("Agent : init");
 		this.agentServer = agentServer;
 		this.serverName = serverName;
 		route = new Route(new Etape(agentServer.site(), _Action.NIHIL));
@@ -37,14 +52,12 @@ public abstract class Agent implements _Agent {
 
 	@Override
 	public void reInit(AgentServer server, String serverName) {
-		System.out.println("Agent : reinit");
 		agentServer = server;
 		this.serverName = serverName;
 	}
 
 	@Override
 	public final void addEtape(Etape etape) {
-		System.out.println("Agent : addEtape "+etape);
 		route.add(etape);
 	}
 
@@ -61,9 +74,20 @@ public abstract class Agent implements _Agent {
 	// Permet de déplacer l'agent vers un autre serveur
 	protected void move(URI uri) {
 		try {
-			// Création d'une socket pour la connexion avec le serveur suivant
-			Socket server = new Socket(uri.getHost(), uri.getPort());
+			Socket destsocket = new Socket(uri.getHost(), uri.getPort());
 
+			OutputStream os = destsocket.getOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(os);
+
+			BAMAgentClassLoader AgentClassLoader = (BAMAgentClassLoader) this.getClass().getClassLoader();
+			Jar BaseCode = AgentClassLoader.extractCode();
+
+			oos.writeObject(BaseCode);
+
+			oos.writeObject(this);
+
+			oos.close();
+			destsocket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -74,8 +98,7 @@ public abstract class Agent implements _Agent {
 	}
 
 	public final String toString() {
-		return null;
-		//TODO
+		return "Je suis un agent";
 	}
 
 

@@ -49,6 +49,10 @@ public final class Server implements _Server {
 			agentServer = new AgentServer(this.port, this.name);
 			/* temporisation de mise en place du server d'agents */
 			Thread.sleep(1000);
+			
+			Thread t = new Thread(agentServer);
+			t.start();
+			
 		}catch(Exception ex){
 			logger.log(Level.FINE," erreur durant le lancement du serveur"+this,ex);
 			return;
@@ -78,7 +82,7 @@ public final class Server implements _Server {
 	 * @param etapeAction la liste des actions des étapes
 	 */
 	public final void deployAgent(String classeName, Object[] args, String codeBase, List<String> etapeAddress, List<String> etapeAction) {
-		Agent agent = null;
+		_Agent agent = null;
 		try {
 			//creation du classLoader
 			BAMAgentClassLoader agentClassLoader = new BAMAgentClassLoader(new URI(codeBase).getPath(),this.getClass().getClassLoader());
@@ -88,7 +92,7 @@ public final class Server implements _Server {
 			Constructor<?> Constructor = agentclass.getConstructor(Object[].class);
 
 			//creation de l'agent
-			agent = (Agent) Constructor.newInstance(new Object[] { args });
+			agent = (_Agent) Constructor.newInstance(new Object[] { args });
 			agent.init(this.agentServer, this.name);
 
 
@@ -117,8 +121,8 @@ public final class Server implements _Server {
 	 * @throws Exception
 	 */
 	protected void startAgent(_Agent agent, BAMAgentClassLoader loader) throws Exception {
-		URI AgentServerSite = this.agentServer.site();
-		Socket Sock = new Socket(AgentServerSite.getHost(), AgentServerSite.getPort());
+		URI site = this.agentServer.site();
+		Socket Sock = new Socket(site.getHost(), site.getPort());
 
 		java.io.OutputStream os = Sock.getOutputStream();
 		ObjectOutputStream oos = new ObjectOutputStream(os);
