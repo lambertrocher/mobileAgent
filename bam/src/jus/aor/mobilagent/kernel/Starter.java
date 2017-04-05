@@ -57,7 +57,7 @@ public class Starter {
 			/* Mise en place du logger pour tracer l'application */
 			String loggerName = "jus/aor/mobilagent/"+InetAddress.getLocalHost().getHostName()+"/"+args[1];
 			logger = Logger.getLogger(loggerName);
-//			logger.setUseParentHandlers(false);
+			//			logger.setUseParentHandlers(false);
 			logger.addHandler(new IOHandler());
 			logger.setLevel(level);
 			/* Récupération d'informations de configuration */
@@ -122,7 +122,7 @@ public class Starter {
 		String codeBase;
 		String classeName;
 		List<String> serverAddress=new LinkedList<String>(), serverAction=new LinkedList<String>();
-		
+
 		for(Node  item1 : iterable(doc,"agent")) {
 			attrsAgent = item1.getAttributes();
 			codeBase = attrsAgent.getNamedItem("codebase").getNodeValue();
@@ -177,12 +177,8 @@ public class Starter {
 			}
 		};
 	}
-	
-	public Logger getLogger() {
-		return this.logger;
-	}
-	
-	
+
+
 	/**
 	 * Application starter
 	 * @param args

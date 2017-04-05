@@ -43,7 +43,7 @@ public class Jar implements Iterable<Map.Entry<String,byte[]>>, Serializable{
 			htSizes.put(entry.getName(), new Integer((int) entry.getSize()));
 		}
 		jar.close();
-		
+
 		FileInputStream fis = new FileInputStream(fileName);
 		BufferedInputStream bis = new BufferedInputStream(fis);
 		JarInputStream jis = new JarInputStream(bis);
@@ -65,20 +65,20 @@ public class Jar implements Iterable<Map.Entry<String,byte[]>>, Serializable{
 		}
 	}
 	/**
-   * Restitue le contenu d'un composant du jar.
-   * @param name le nom de la ressource.
-   * @return le contenu du ficher ou nul si la ressource n'existe pas.
-   */
+	 * Restitue le contenu d'un composant du jar.
+	 * @param name le nom de la ressource.
+	 * @return le contenu du ficher ou nul si la ressource n'existe pas.
+	 */
 	public byte[] getResource(String name){
 		byte[] result = contents.get(name);
 		if(result==null) result = contents.get(formatClassName(name));
 		return result;
 	}
 	/**
-   * Restitue le contenu d'une classe du jar.
-   * @param name le nom de la classe.
-   * @return le contenu de la classe ou nul si la classe n'existe pas.
-   */
+	 * Restitue le contenu d'une classe du jar.
+	 * @param name le nom de la classe.
+	 * @return le contenu de la classe ou nul si la classe n'existe pas.
+	 */
 	public byte[] getClass(String name){ return getResource(formatClassName(name));}
 	/* (non-Javadoc)
 	 * @see java.lang.Iterable#iterator()

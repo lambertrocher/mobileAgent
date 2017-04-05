@@ -57,7 +57,7 @@ class Route implements Iterable<Etape>, Serializable{
 			if(this.route.isEmpty()){
 				this.hasNext = false;
 				return this.retour;
-				
+
 			}
 			return this.route.remove(0);	
 		}

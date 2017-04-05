@@ -92,7 +92,7 @@ public final class Server implements _Server {
 
 			Iterator<String> addressIt = etapeAddress.iterator();
 			Iterator<String> actionIt = etapeAction.iterator();
-			
+
 			//ajoute toutes les etapes
 			while(addressIt.hasNext() && actionIt.hasNext()) {
 				Field champ = agentclass.getDeclaredField(actionIt.next());
