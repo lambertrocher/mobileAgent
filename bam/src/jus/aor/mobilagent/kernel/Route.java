@@ -40,17 +40,28 @@ class Route implements Iterable<Etape>, Serializable{
 	 * @return la prochaine étape.
 	 */
 	Etape get() throws NoSuchElementException {
-	    return next();
+		if (this.hasNext){
+			if(this.route.isEmpty()){
+				return this.retour;
+			}
+			return this.route.get(0);	
+		}
+		throw new NoSuchElementException("la route est vide");
 	}
 	/**
 	 * Restitue la prochaine étape et élimine de la route ou la dernière qui est la base de départ.
 	 * @return la prochaine étape.
 	 */
 	Etape next() throws NoSuchElementException {
-	    if (hasNext()) {
-		return route.remove(0);
-	    }
-	    return retour;
+		if (this.hasNext){
+			if(this.route.isEmpty()){
+				this.hasNext = false;
+				return this.retour;
+				
+			}
+			return this.route.remove(0);	
+		}
+		throw new NoSuchElementException("la route est vide");
 	}
 	/**
 	 * Il y a-t-il encore une étape à parcourir.

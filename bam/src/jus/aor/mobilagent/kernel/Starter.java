@@ -80,7 +80,7 @@ public class Starter {
 		loader = new BAMServerClassLoader(new URL[]{new URL("file:///.../MobilagentServer.jar")},this.getClass().getClassLoader());
 		classe = (Class<jus.aor.mobilagent.kernel.Server>)Class.forName("jus.aor.mobilagent.kernel.Server",true,loader);
 		server = classe.getConstructor(int.class,String.class).newInstance(port,name);
-		logger.log(Level.FINE, "Server \""+name+"\" created at port "+port, "");
+		logger.log(Level.FINE, "\""+name+"\" created at port "+port, "");
 	}
 	/**
 	 * Ajoute les services définis dans le fichier de configuration
@@ -177,6 +177,12 @@ public class Starter {
 			}
 		};
 	}
+	
+	public Logger getLogger() {
+		return this.logger;
+	}
+	
+	
 	/**
 	 * Application starter
 	 * @param args
