@@ -3,9 +3,11 @@
  */
 package jus.aor.mobilagent.kernel;
 
+import java.io.ObjectOutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.net.InetAddress;
+import java.net.Socket;
 import java.net.URI;
 import java.net.URL;
 import java.util.Iterator;
@@ -115,11 +117,26 @@ public final class Server implements _Server {
 	 * @throws Exception
 	 */
 	protected void startAgent(_Agent agent, BAMAgentClassLoader loader) throws Exception {
-		//A COMPLETER
+		URI AgentServerSite = this.agentServer.site();
+		Socket Sock = new Socket(AgentServerSite.getHost(), AgentServerSite.getPort());
+
+		java.io.OutputStream os = Sock.getOutputStream();
+		ObjectOutputStream oos = new ObjectOutputStream(os);
+		ObjectOutputStream oss = new ObjectOutputStream(os);
+		
+		// extraie le jar
+		Jar BaseCode = loader.extractCode();
+
+		//envoie le chemin du jar et l'agent
+		oos.writeObject(BaseCode);
+		oss.writeObject(agent);
+
+		oos.close();
+		oss.close();
+		Sock.close();
 	}
 
 	public String toString() {
-		return null;
-		//TODO
+		return name;
 	}
 }

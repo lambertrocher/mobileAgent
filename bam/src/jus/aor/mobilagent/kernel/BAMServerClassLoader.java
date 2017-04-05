@@ -6,19 +6,15 @@ import java.net.URLClassLoader;
 public class BAMServerClassLoader extends URLClassLoader{
 
 	BAMServerClassLoader(URL[] urls, ClassLoader classLoader) {
-		super(urls, classLoader);
-		for (URL url : urls) {
-			this.addURL(url);
-		}
+		super(urls);
 	}
 
-	public void addURL(URL urls) {
-		//TODO
+	public void addURL(URL url) {
+		super.addURL(url);
 	}
 
 	public String toString() {
-		return null;
-		//TODO
+		return super.toString();
 	}
 
 }
